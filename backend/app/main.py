@@ -5,6 +5,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from . import models, schemas, crud
 from .database import engine, get_db
@@ -26,6 +27,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Initialize Prometheus metrics
+Instrumentator().instrument(app).expose(app)
 
 
 @app.get("/")
