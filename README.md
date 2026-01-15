@@ -1,7 +1,5 @@
 # Software Deployment Lifecycle
 
-# Software Deployment Lifecycle
-
 ![CI/CD Pipeline](https://github.com/zeltmanis/software-deployment-lifecycle/actions/workflows/ci-cd.yml/badge.svg)
 
 Capstone project demonstrating a modern software deployment lifecycle using Docker, GitHub Actions, and automated testing.
