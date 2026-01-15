@@ -21,26 +21,3 @@ COPY . .
 
 # Expose port
 EXPOSE 8000
-
-# Command will be overridden by docker-compose
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-Create **`backend/.dockerignore`**:
-```
-__pycache__
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-*.egg-info/
-.pytest_cache/
-.coverage
-htmlcov/
-.idea/
-.vscode/
-*.log
-.DS_Store
