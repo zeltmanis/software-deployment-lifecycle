@@ -60,12 +60,12 @@ software-deployment-lifecycle/
 This project is structured into epics tracked through GitHub commits and issues.
 
 - [x] Epic 1: Project Setup
-- [ ] Epic 2: FastAPI Backend
-- [ ] Epic 3: MariaDB Integration
-- [ ] Epic 4: Dev Environment
-- [ ] Epic 5: Test Environment
-- [ ] Epic 6: Automated Testing
-- [ ] Epic 7: GitHub Actions CI/CD
+- [x] Epic 2: FastAPI Backend
+- [x] Epic 3: MariaDB Integration
+- [x] Epic 4: Dev Environment
+- [x] Epic 5: Test Environment
+- [x] Epic 6: Automated Testing
+- [x] Epic 7: GitHub Actions CI/CD
 - [ ] Epic 8: Grafana Dashboard
 
 ## Author
