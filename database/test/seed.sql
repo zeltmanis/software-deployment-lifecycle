@@ -1,10 +1,13 @@
--- Test database initialization and seeding script
--- This script creates clean test data that gets loaded every time test environment starts
+-- Test database seeding script
+-- This script seeds clean test data that gets loaded every time test environment starts
+-- Note: The database and tables are created by SQLAlchemy, this only seeds data
 
-CREATE DATABASE IF NOT EXISTS ledger_test;
 USE ledger_test;
 
--- The tables will be created automatically by SQLAlchemy
+-- Clear existing data
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE accounts;
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- Seed test data - always the same accounts for consistent testing
 INSERT INTO accounts (first_name, last_name, balance, payment_method, created_at) VALUES
@@ -18,7 +21,3 @@ INSERT INTO accounts (first_name, last_name, balance, payment_method, created_at
 ('Fiona', 'Garcia', 1800.00, 'cash', NOW()),
 ('George', 'Rodriguez', 5000.00, 'credit_card', NOW()),
 ('Hannah', 'Wilson', 320.50, 'bank_transfer', NOW());
-
--- Grant permissions to test user
-GRANT ALL PRIVILEGES ON ledger_test.* TO 'test_user'@'%';
-FLUSH PRIVILEGES;
