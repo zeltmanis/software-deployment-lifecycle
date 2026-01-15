@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  # MariaDB Database for Testing
+  test_db:
+    image: mariadb:11.2
+    container_name: ledger_test_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: test_root_password
+      MYSQL_DATABASE: ledger_test
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: test_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - test_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend for Testing
+  test_backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ledger_test_backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: mysql+pymysql://test_user:test_password@test_db:3306/ledger_test
+      ENVIRONMENT: test
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      test_db:
+        condition: service_healthy
+    command: >
+      sh -c "
+        sleep 5 &&
+        mysql -h test_db -u test_user -ptest_password ledger_test < /app/seed_data.sql || true &&
+        uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      "
+
+  # Frontend for Testing
+  test_frontend:
+    image: nginx:alpine
+    container_name: ledger_test_frontend
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend/test:/usr/share/nginx/html:ro
+    depends_on:
+      - test_backend
+
+  # Database seeder - runs once to populate test data
+  test_db_seeder:
+    image: mariadb:11.2
+    container_name: ledger_test_seeder
+    depends_on:
+      test_db:
+        condition: service_healthy
+    volumes:
+      - ./database/test:/seeds:ro
+    command: >
+      sh -c "
+        sleep 10 &&
+        mysql -h test_db -u test_user -ptest_password ledger_test < /seeds/seed.sql &&
+        echo 'Test data seeded successfully!'
+      "
+    restart: "no"
+
+volumes:
+  test_db_data:
+    driver: local

@@ -63,3 +63,8 @@ htmlcov/
 # Logs
 logs/
 *.log
+
+# Environment files
+.env
+.env.local
+backend/.env

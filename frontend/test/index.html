@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Ledger - Test Environment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        .main-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .env-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .account-card {
+            border-left: 4px solid #667eea;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 15px;
+        }
+
+        .account-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .balance-amount {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-2"><i class="bi bi-bank2"></i> General Ledger API</h1>
+                    <span class="env-badge">TEST ENVIRONMENT</span>
+                </div>
+                <button class="btn btn-outline-primary" onclick="loadAccounts()">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+            </div>
+
+            <!-- Statistics Row -->
+            <div class="row" id="statsRow">
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <div class="stats-number" id="totalAccounts">0</div>
+                        <div>Total Accounts</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <div class="stats-number" id="totalBalance">$0.00</div>
+                        <div>Total Balance</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <div class="stats-number" id="avgBalance">$0.00</div>
+                        <div>Average Balance</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Account Section -->
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h2 class="section-title"><i class="bi bi-person-plus"></i> Create New Account</h2>
+                    <form id="createAccountForm">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="firstName" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" id="lastName" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Balance</label>
+                                    <input type="number" class="form-control" id="balance" step="0.01" value="0.00" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label class="form-label">Payment Method</label>
+                                    <select class="form-select" id="paymentMethod">
+                                        <option value="cash">Cash</option>
+                                        <option value="credit_card">Credit Card</option>
+                                        <option value="debit_card">Debit Card</option>
+                                        <option value="bank_transfer">Bank Transfer</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Create Account
+                        </button>
+                    </form>
+                    <div id="createMessage" class="mt-3"></div>
+                </div>
+            </div>
+
+            <!-- Accounts List Section -->
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <h2 class="section-title"><i class="bi bi-people"></i> All Accounts</h2>
+                    <div id="accountsList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const API_URL = 'http://localhost:8000';
+
+        // Load accounts on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAccounts();
+        });
+
+        // Create account form submission
+        document.getElementById('createAccountForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const account = {
+                first_name: document.getElementById('firstName').value,
+                last_name: document.getElementById('lastName').value,
+                balance: parseFloat(document.getElementById('balance').value),
+                payment_method: document.getElementById('paymentMethod').value
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/accounts`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(account)
+                });
+
+                if (response.ok) {
+                    showMessage('Account created successfully!', 'success');
+                    document.getElementById('createAccountForm').reset();
+                    loadAccounts();
+                } else {
+                    showMessage('Error creating account', 'danger');
+                }
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'danger');
+            }
+        });
+
+        // Load all accounts
+        async function loadAccounts() {
+            try {
+                const response = await fetch(`${API_URL}/accounts`);
+                const accounts = await response.json();
+
+                updateStats(accounts);
+
+                const accountsList = document.getElementById('accountsList');
+
+                if (accounts.length === 0) {
+                    accountsList.innerHTML = '<div class="alert alert-info">No accounts found. Create one above!</div>';
+                    return;
+                }
+
+                accountsList.innerHTML = accounts.map(account => `
+                    <div class="card account-card">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-4">
+                                    <h5 class="card-title mb-1">
+                                        <i class="bi bi-person-circle"></i>
+                                        ${account.first_name} ${account.last_name}
+                                    </h5>
+                                    <small class="text-muted">ID: ${account.id}</small>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="balance-amount">$${parseFloat(account.balance).toFixed(2)}</div>
+                                </div>
+                                <div class="col-md-3">
+                                    <span class="badge bg-primary">
+                                        <i class="bi bi-credit-card"></i>
+                                        ${formatPaymentMethod(account.payment_method)}
+                                    </span>
+                                    <br>
+                                    <small class="text-muted">${new Date(account.created_at).toLocaleDateString()}</small>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteAccount(${account.id})">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('accountsList').innerHTML =
+                    `<div class="alert alert-danger">Error loading accounts: ${error.message}</div>`;
+            }
+        }
+
+        // Update statistics
+        function updateStats(accounts) {
+            const totalAccounts = accounts.length;
+            const totalBalance = accounts.reduce((sum, acc) => sum + parseFloat(acc.balance), 0);
+            const avgBalance = totalAccounts > 0 ? totalBalance / totalAccounts : 0;
+
+            document.getElementById('totalAccounts').textContent = totalAccounts;
+            document.getElementById('totalBalance').textContent = '$' + totalBalance.toFixed(2);
+            document.getElementById('avgBalance').textContent = '$' + avgBalance.toFixed(2);
+        }
+
+        // Delete account
+        async function deleteAccount(id) {
+            if (!confirm('Are you sure you want to delete this account?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/accounts/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showMessage('Account deleted successfully!', 'success');
+                    loadAccounts();
+                } else {
+                    showMessage('Error deleting account', 'danger');
+                }
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'danger');
+            }
+        }
+
+        // Format payment method
+        function formatPaymentMethod(method) {
+            return method.split('_').map(word =>
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+
+        // Show message helper
+        function showMessage(message, type) {
+            const element = document.getElementById('createMessage');
+            element.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>`;
+        }
+    </script>
+</body>
+</html>
