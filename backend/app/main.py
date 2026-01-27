@@ -49,7 +49,7 @@ async def health_check():
 
 
 # DEMO FEATURE: Uncomment to enable demo endpoint
-
+"""
 @app.get("/demo")
 async def demo_endpoint():
     '''Demo endpoint to showcase deployment lifecycle'''
@@ -60,7 +60,7 @@ async def demo_endpoint():
         "environment": "production-ready",
         "status": "active"
     }
-
+"""
 
 
 # Account endpoints
@@ -89,9 +89,9 @@ def get_account(account_id: int, db: Session = Depends(get_db)):
 
 @app.put("/accounts/{account_id}", response_model=schemas.AccountResponse)
 def update_account(
-        account_id: int,
-        account_update: schemas.AccountUpdate,
-        db: Session = Depends(get_db)
+    account_id: int,
+    account_update: schemas.AccountUpdate,
+    db: Session = Depends(get_db)
 ):
     """Update an existing account"""
     db_account = crud.update_account(db, account_id=account_id, account_update=account_update)
@@ -111,9 +111,9 @@ def delete_account(account_id: int, db: Session = Depends(get_db)):
 
 @app.post("/accounts/{account_id}/transaction", response_model=schemas.TransactionResponse)
 def create_transaction(
-        account_id: int,
-        transaction: schemas.TransactionRequest,
-        db: Session = Depends(get_db)
+    account_id: int,
+    transaction: schemas.TransactionRequest,
+    db: Session = Depends(get_db)
 ):
     """Process a transaction (add or subtract from balance)"""
     try:
