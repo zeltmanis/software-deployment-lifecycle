@@ -163,6 +163,14 @@
             <div class="row mt-5">
                 <div class="col-md-12">
                     <h2 class="section-title"><i class="bi bi-people"></i> All Accounts</h2>
+
+                    <!-- DEMO FEATURE: Uncomment to enable demo endpoint -->
+                    <!--
+                    <button class="btn btn-warning mb-3" onclick="callDemoEndpoint()">
+                        <i class="bi bi-star-fill"></i> DEMO Feature
+                    </button>
+                    -->
+
                     <div id="accountsList"></div>
                 </div>
             </div>
@@ -310,6 +318,37 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>`;
         }
+
+        // DEMO FEATURE: Uncomment to enable demo endpoint
+        /*
+        async function callDemoEndpoint() {
+            try {
+                const response = await fetch(`${API_URL}/demo`);
+                const data = await response.json();
+
+                // Show nice Bootstrap alert
+                const alertHtml = `
+                    <div class="alert alert-success alert-dismissible fade show mt-3">
+                        <h5><i class="bi bi-check-circle"></i> Demo Feature Activated!</h5>
+                        <p><strong>Message:</strong> ${data.message}</p>
+                        <p><strong>Timestamp:</strong> ${new Date(data.timestamp).toLocaleString()}</p>
+                        <p><strong>Environment:</strong> ${data.environment}</p>
+                        <p><strong>Status:</strong> ${data.status}</p>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                document.querySelector('.main-container').insertAdjacentHTML('afterbegin', alertHtml);
+            } catch (error) {
+                const alertHtml = `
+                    <div class="alert alert-danger alert-dismissible fade show mt-3">
+                        <strong>Error:</strong> ${error.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                document.querySelector('.main-container').insertAdjacentHTML('afterbegin', alertHtml);
+            }
+        }
+        */
     </script>
 </body>
 </html>

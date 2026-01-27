@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48a70b14-943c-484c-8fdb-5bdfde749bd6" name="Changes" comment="Create FastAPI application with basic endpoints" />
+    <list default="true" id="48a70b14-943c-484c-8fdb-5bdfde749bd6" name="Changes" comment="Create FastAPI application with basic endpoints">
+      <change afterPath="$PROJECT_DIR$/presentation/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/dev/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/dev/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/test/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/test/index.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -94,6 +99,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Create project folder structure" />
     <MESSAGE value="Create FastAPI application with basic endpoints" />
-    <option name="LAST_COMMIT_MESSAGE" value="Create FastAPI application with basic endpoints" />
+    <MESSAGE value="Fix Grafana metrics" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix Grafana metrics" />
   </component>
 </project>
