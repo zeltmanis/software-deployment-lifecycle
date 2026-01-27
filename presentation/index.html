@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Deployment Lifecycle - Capstone Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .slide {
+            background: white;
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            max-height: 900px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px 60px 80px 60px;
+            display: none;
+            flex-direction: column;
+            position: relative;
+            animation: slideIn 0.5s ease-out;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-number {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
+            color: #999;
+            font-size: 14px;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 25px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin: 15px 0 10px 0;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .author-info {
+            text-align: center;
+            margin-top: auto;
+            padding-top: 30px;
+        }
+
+        .author-info p {
+            font-size: 1.1em;
+            color: #666;
+            margin: 8px 0;
+        }
+
+        ul {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        ul li {
+            font-size: 1.1em;
+            color: #444;
+            margin: 12px 0;
+            padding-left: 35px;
+            position: relative;
+        }
+
+        ul li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 15px 0;
+        }
+
+        .box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .box h4 {
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+        }
+
+        .box p, .box li {
+            font-size: 1em;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .tech-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        button {
+            background: white;
+            border: 3px solid #667eea;
+            color: #667eea;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        button:disabled:hover {
+            transform: none;
+        }
+
+        .highlight {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .architecture-diagram {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: auto;
+        }
+
+        .demo-link {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .demo-link a {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .demo-link a:hover {
+            transform: scale(1.05);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .metric-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .key-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 18px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .feature-card h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1.15em;
+        }
+
+        .feature-card p {
+            color: #555;
+            line-height: 1.5;
+            font-size: 0.95em;
+        }
+
+        /* Responsive adjustments */
+        @media (max-height: 800px) {
+            .slide {
+                padding: 30px 50px 70px 50px;
+            }
+
+            h1 {
+                font-size: 2.2em;
+            }
+
+            h2 {
+                font-size: 1.8em;
+            }
+
+            h3 {
+                font-size: 1.3em;
+            }
+
+            ul li {
+                font-size: 1em;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>Software Deployment Lifecycle</h1>
+            <p class="subtitle">Demonstrating Modern DevOps Practices with Docker and CI/CD</p>
+
+            <div class="author-info">
+                <p><strong>Student:</strong> Edgars Zeltmanis</p>
+                <p><strong>Course:</strong> Software Application and Technology</p>
+                <p><strong>Project:</strong> Capstone</p>
+                <p><strong>Date:</strong> January 2026</p>
+            </div>
+            <div class="slide-number">1 / 12</div>
+        </div>
+
+        <!-- Slide 2: Problem Statement -->
+        <div class="slide">
+            <h2>Problem Statement</h2>
+            <h3>The Challenge</h3>
+            <ul>
+                <li>Applications need separate development and testing environments</li>
+                <li>Manual setup is time-consuming and error-prone</li>
+                <li>Inconsistencies between environments cause production issues</li>
+                <li>Lack of monitoring makes debugging difficult</li>
+            </ul>
+
+            <h3 style="margin-top: 40px;">The Solution</h3>
+            <p style="font-size: 1.3em; color: #555; margin-top: 20px;">
+                Create a <span class="highlight">containerized deployment pipeline</span> with automated testing,
+                environment separation, and real-time monitoring.
+            </p>
+            <div class="slide-number">2 / 12</div>
+        </div>
+
+        <!-- Slide 3: Technology Stack -->
+        <div class="slide">
+            <h2>Technology Stack</h2>
+            <div class="tech-stack">
+                <div class="tech-badge">🐍 Python 3.13</div>
+                <div class="tech-badge">⚡ FastAPI</div>
+                <div class="tech-badge">🗄️ MariaDB</div>
+                <div class="tech-badge">🐳 Docker</div>
+                <div class="tech-badge">📦 Docker Compose</div>
+                <div class="tech-badge">🔄 GitHub Actions</div>
+                <div class="tech-badge">✅ Pytest</div>
+                <div class="tech-badge">📊 Prometheus</div>
+                <div class="tech-badge">📈 Grafana</div>
+                <div class="tech-badge">🎨 Bootstrap</div>
+            </div>
+
+            <h3 style="margin-top: 40px;">Development Tools</h3>
+            <div class="tech-stack">
+                <div class="tech-badge">💻 PyCharm</div>
+                <div class="tech-badge">🔧 Git</div>
+                <div class="tech-badge">🐙 GitHub</div>
+                <div class="tech-badge">🍎 macOS</div>
+            </div>
+            <div class="slide-number">3 / 12</div>
+        </div>
+
+        <!-- Slide 4: Application Overview -->
+        <div class="slide">
+            <h2>The Application: General Ledger</h2>
+            <p style="font-size: 1.3em; color: #555; margin-bottom: 30px;">
+                A simple account balance tracking system demonstrating full-stack development
+            </p>
+
+            <div class="two-column">
+                <div class="box">
+                    <h4>📊 Features</h4>
+                    <ul style="list-style: disc; padding-left: 20px;">
+                        <li>Create accounts with balance tracking</li>
+                        <li>Multiple payment methods</li>
+                        <li>Transaction processing</li>
+                        <li>Full CRUD operations</li>
+                        <li>RESTful API design</li>
+                    </ul>
+                </div>
+                <div class="box">
+                    <h4>🗄️ Database Schema</h4>
+                    <ul style="list-style: disc; padding-left: 20px;">
+                        <li>First & Last Name</li>
+                        <li>Account Balance</li>
+                        <li>Payment Method (enum)</li>
+                        <li>Timestamps (created/updated)</li>
+                        <li>Auto-incrementing ID</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-number">4 / 12</div>
+        </div>
+
+        <!-- Slide 5: Architecture -->
+        <div class="slide">
+            <h2>System Architecture</h2>
+            <div class="architecture-diagram">
+┌─────────────────────────────────────────────────────────┐<br>
+│               DEVELOPMENT ENVIRONMENT                    │<br>
+│  ┌──────────┐    ┌──────────┐    ┌─────────────────┐  │<br>
+│  │  Simple  │───▶│ FastAPI  │───▶│  MariaDB (dev)  │  │<br>
+│  │ Frontend │    │ Backend  │    │ Persistent Data │  │<br>
+│  └──────────┘    └──────────┘    └─────────────────┘  │<br>
+└─────────────────────────────────────────────────────────┘<br>
+                           │<br>
+                    git push + GitHub Actions<br>
+                           │<br>
+                           ▼<br>
+┌─────────────────────────────────────────────────────────┐<br>
+│                TEST ENVIRONMENT                          │<br>
+│  ┌──────────┐    ┌──────────┐    ┌─────────────────┐  │<br>
+│  │  Styled  │───▶│ FastAPI  │───▶│  MariaDB (test) │  │<br>
+│  │ Frontend │    │ Backend  │    │  Seeded Data    │  │<br>
+│  └──────────┘    └──────────┘    └─────────────────┘  │<br>
+│       │               │                    │            │<br>
+│       └───────────────┴────────────────────┘            │<br>
+│                       │                                 │<br>
+│                  ┌────▼─────┐         ┌──────────┐     │<br>
+│                  │Prometheus│────────▶│ Grafana  │     │<br>
+│                  └──────────┘         └──────────┘     │<br>
+└─────────────────────────────────────────────────────────┘
+            </div>
+            <div class="slide-number">5 / 12</div>
+        </div>
+
+        <!-- Slide 6: Development Environment -->
+        <div class="slide">
+            <h2>Development Environment</h2>
+            <div class="key-features">
+                <div class="feature-card">
+                    <h4>🎯 Purpose</h4>
+                    <p>Developers write and test code locally with quick iteration cycles</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🖥️ Frontend</h4>
+                    <p>Simple HTML/CSS interface for rapid prototyping and manual testing</p>
+                </div>
+                <div class="feature-card">
+                    <h4>💾 Database</h4>
+                    <p>Persistent MariaDB data - developer's working data stays between restarts</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🔄 Hot Reload</h4>
+                    <p>FastAPI automatically restarts when code changes are detected</p>
+                </div>
+            </div>
+
+            <div class="box" style="margin-top: 30px;">
+                <h4>Quick Start</h4>
+                <p style="font-family: monospace; background: white; padding: 15px; border-radius: 5px; margin-top: 10px;">
+                    docker-compose -f docker-compose.dev.yml up<br>
+                    → Access: http://localhost:8080
+                </p>
+            </div>
+            <div class="slide-number">6 / 12</div>
+        </div>
+
+        <!-- Slide 7: Test Environment -->
+        <div class="slide">
+            <h2>Test Environment</h2>
+            <div class="key-features">
+                <div class="feature-card">
+                    <h4>🧪 Purpose</h4>
+                    <p>QA engineers test features with clean, consistent data</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🎨 Frontend</h4>
+                    <p>Polished Bootstrap UI with gradient design and statistics dashboard</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📊 Monitoring</h4>
+                    <p>Grafana dashboards show API metrics, response times, and error rates</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🌱 Seeded Data</h4>
+                    <p>10 pre-defined test accounts ensure consistent testing scenarios</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 30px;">Automated Testing</h3>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-number">18</div>
+                    <div class="metric-label">Test Cases</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">100%</div>
+                    <div class="metric-label">Pass Rate</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">0.29s</div>
+                    <div class="metric-label">Test Duration</div>
+                </div>
+            </div>
+            <div class="slide-number">7 / 12</div>
+        </div>
+
+        <!-- Slide 8: Environment Access Points -->
+        <div class="slide">
+            <h2>Environment Access Points</h2>
+
+            <div class="two-column">
+                <div class="box">
+                    <h4>🔧 Development Environment</h4>
+                    <ul style="list-style: none; padding-left: 0; font-family: monospace;">
+                        <li style="margin: 12px 0; padding-left: 0;">
+                            <strong style="color: #667eea;">Frontend:</strong><br>
+                            <a href="http://localhost:8080" target="_blank" style="color: #555;">http://localhost:8080</a>
+                        </li>
+                        <li style="margin: 12px 0; padding-left: 0;">
+                            <strong style="color: #667eea;">API:</strong><br>
+                            <a href="http://localhost:8000" target="_blank" style="color: #555;">http://localhost:8000</a>
+                        </li>
+                        <li style="margin: 12px 0; padding-left: 0;">
+                            <strong style="color: #667eea;">API Docs:</strong><br>
+                            <a href="http://localhost:8000/docs" target="_blank" style="color: #555;">http://localhost:8000/docs</a>
+                        </li>
+                        <li style="margin: 12px 0; padding-left: 0;">
+                            <strong style="color: #667eea;">Database:</strong><br>
+                            <span style="color: #555;">localhost:3306</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="box">
+                    <h4>🧪 Test Environment</h4>
+                    <ul style="list-style: none; padding-left: 0; font-family: monospace;">
+                        <li style="margin: 12px 0; padding-left: 0;">
+                            <strong style="color: #667eea;">Frontend:</strong><br>
+                            <a href="http://localhost:8080" target="_blank" style="color: #555;">http://localhost:8080</a>
+                        </li>
+                        <li style="margin: 12px 0; padding-left: 0;">
+                            <strong style="color: #667eea;">API:</strong><br>
+                            <a href="http://localhost:8000" target="_blank" style="color: #555;">http://localhost:8000</a>
+                        </li>
+                        <li style="margin: 12px 0; padding-left: 0;">
+                            <strong style="color: #667eea;">API Docs:</strong><br>
+                            <a href="http://localhost:8000/docs" target="_blank" style="color: #555;">http://localhost:8000/docs</a>
+                        </li>
+                        <li style="margin: 12px 0; padding-left: 0;">
+                            <strong style="color: #667eea;">Grafana:</strong><br>
+                            <a href="http://localhost:3000" target="_blank" style="color: #555;">http://localhost:3000</a>
+                            <span style="color: #999;"> (admin/admin)</span>
+                        </li>
+                        <li style="margin: 12px 0; padding-left: 0;">
+                            <strong style="color: #667eea;">Prometheus:</strong><br>
+                            <a href="http://localhost:9090" target="_blank" style="color: #555;">http://localhost:9090</a>
+                        </li>
+                        <li style="margin: 12px 0; padding-left: 0;">
+                            <strong style="color: #667eea;">Metrics:</strong><br>
+                            <a href="http://localhost:8000/metrics" target="_blank" style="color: #555;">http://localhost:8000/metrics</a>
+                        </li>
+                        <li style="margin: 12px 0; padding-left: 0;">
+                            <strong style="color: #667eea;">Database:</strong><br>
+                            <span style="color: #555;">localhost:3307</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <p style="text-align: center; margin-top: 30px; color: #999; font-size: 0.95em;">
+                💡 Note: Only one environment can run at a time (both use ports 8080 and 8000)
+            </p>
+            <div class="slide-number">8 / 12</div>
+        </div>
+
+        <!-- Slide 9: CI/CD Pipeline -->
+        <div class="slide">
+            <h2>CI/CD Pipeline with GitHub Actions</h2>
+
+            <div class="box" style="margin-bottom: 30px;">
+                <h4>🔄 Automated Workflow</h4>
+                <p>Every push to the main branch triggers:</p>
+            </div>
+
+            <ul>
+                <li><strong>Code Checkout:</strong> Latest code fetched from repository</li>
+                <li><strong>Python Setup:</strong> Python 3.12 environment configured</li>
+                <li><strong>Dependency Installation:</strong> All packages installed and cached</li>
+                <li><strong>MariaDB Service:</strong> Database container spun up for testing</li>
+                <li><strong>Test Execution:</strong> All 18 tests run automatically</li>
+                <li><strong>Docker Build:</strong> Backend image built and tagged</li>
+                <li><strong>Image Push:</strong> Successfully tested images pushed to GitHub Container Registry</li>
+            </ul>
+
+            <p style="font-size: 1.2em; color: #667eea; margin-top: 30px; text-align: center;">
+                ✓ Ensures code quality before deployment<br>
+                ✓ Catches bugs early in development cycle
+            </p>
+            <div class="slide-number">9 / 12</div>
+        </div>
+
+        <!-- Slide 10: Monitoring & Observability -->
+        <div class="slide">
+            <h2>Monitoring & Observability</h2>
+
+            <h3>Prometheus Metrics Collection</h3>
+            <ul>
+                <li>Scrapes metrics from FastAPI every 15 seconds</li>
+                <li>Stores time-series data for analysis</li>
+                <li>Tracks request counts, response times, status codes</li>
+            </ul>
+
+            <h3>Grafana Visualization</h3>
+            <div class="two-column">
+                <div class="box">
+                    <h4>📊 Key Metrics</h4>
+                    <ul style="list-style: disc; padding-left: 20px;">
+                        <li>Total API requests</li>
+                        <li>Request rate (req/sec)</li>
+                        <li>Average response time</li>
+                        <li>HTTP status distribution</li>
+                        <li>Requests by endpoint</li>
+                    </ul>
+                </div>
+                <div class="box">
+                    <h4>🎯 Benefits</h4>
+                    <ul style="list-style: disc; padding-left: 20px;">
+                        <li>Real-time system health</li>
+                        <li>Performance bottleneck identification</li>
+                        <li>Error rate monitoring</li>
+                        <li>Capacity planning data</li>
+                        <li>Professional observability</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-number">10 / 12</div>
+        </div>
+
+        <!-- Slide 11: Project Metrics -->
+        <div class="slide">
+            <h2>Project Achievements</h2>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-number">35+</div>
+                    <div class="metric-label">Git Commits</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">8</div>
+                    <div class="metric-label">Completed Epics</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">18</div>
+                    <div class="metric-label">Test Cases</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">2</div>
+                    <div class="metric-label">Environments</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">7</div>
+                    <div class="metric-label">Docker Services</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">6</div>
+                    <div class="metric-label">REST Endpoints</div>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 40px;">Development Workflow</h3>
+            <p style="font-size: 1.2em; color: #555; text-align: center; margin-top: 20px;">
+                Agile methodology with epic-based planning • Meaningful commit history •
+                Professional Git workflow • Comprehensive documentation
+            </p>
+            <div class="slide-number">11 / 12</div>
+        </div>
+
+        <!-- Slide 12: Conclusion -->
+        <div class="slide">
+            <h2>Key Takeaways</h2>
+
+            <div class="key-features">
+                <div class="feature-card">
+                    <h4>🏗️ Infrastructure as Code</h4>
+                    <p>Complete environment reproducibility through Docker Compose configurations</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🔄 Automation</h4>
+                    <p>CI/CD pipeline eliminates manual testing and deployment steps</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📊 Observability</h4>
+                    <p>Real-time monitoring enables proactive issue detection and resolution</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🧪 Quality Assurance</h4>
+                    <p>Automated testing ensures code reliability before deployment</p>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 40px; text-align: center; color: #667eea;">
+                Professional DevOps Practices Demonstrated
+            </h3>
+            <p style="font-size: 1.3em; text-align: center; margin-top: 20px; color: #555;">
+                This project showcases industry-standard practices for modern software deployment,
+                from development through testing to production-ready monitoring.
+            </p>
+
+            <div class="demo-link">
+                <a href="https://github.com/YOUR_USERNAME/software-deployment-lifecycle" target="_blank">
+                    View on GitHub →
+                </a>
+            </div>
+            <div class="slide-number">12 / 12</div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+        <button id="nextBtn" onclick="changeSlide(1)">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+
+            // Update button states
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Initialize
+        document.getElementById('prevBtn').disabled = true;
+    </script>
+</body>
+</html>

@@ -94,6 +94,15 @@
             background: #da190b;
         }
 
+        .button-demo {
+            background: #ff9800;
+            margin-left: 10px;
+        }
+
+        .button-demo:hover {
+            background: #e68900;
+        }
+
         #accountsList {
             margin-top: 20px;
         }
@@ -172,6 +181,12 @@
         <div class="section">
             <h2>All Accounts</h2>
             <button onclick="loadAccounts()">Refresh Accounts</button>
+
+            <!-- DEMO FEATURE: Uncomment to enable demo endpoint -->
+
+            <button onclick="callDemoEndpoint()" class="button-demo">🎯 DEMO Feature</button>
+
+
             <div id="accountsList"></div>
         </div>
     </div>
@@ -275,6 +290,19 @@
                 element.innerHTML = '';
             }, 3000);
         }
+
+        // DEMO FEATURE: Uncomment to enable demo endpoint
+        /*
+        async function callDemoEndpoint() {
+            try {
+                const response = await fetch(`${API_URL}/demo`);
+                const data = await response.json();
+                alert(`Demo Response: ${data.message}\nTimestamp: ${new Date(data.timestamp).toLocaleString()}`);
+            } catch (error) {
+                alert('Demo endpoint error: ' + error.message);
+            }
+        }
+        */
     </script>
 </body>
 </html>
