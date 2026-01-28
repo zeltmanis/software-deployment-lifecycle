@@ -49,7 +49,7 @@ async def health_check():
 
 
 # DEMO FEATURE: Uncomment to enable demo endpoint
-"""
+
 @app.get("/demo")
 async def demo_endpoint():
     '''Demo endpoint to showcase deployment lifecycle'''
@@ -60,7 +60,7 @@ async def demo_endpoint():
         "environment": "production-ready",
         "status": "active"
     }
-"""
+
 
 
 # Account endpoints
